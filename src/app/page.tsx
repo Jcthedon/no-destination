@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { COUNTRIES, ARCHETYPES } from "@/lib/data";
+import HeroCarousel from "@/components/HeroCarousel";
 
 const FEATURED = [
   COUNTRIES.find((c) => c.code === "JPN")!,
@@ -42,11 +43,8 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0f1f1a 0%, #1a3328 50%, #0f2318 100%)" }}>
-        {/* Background texture */}
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: "radial-gradient(circle at 20% 50%, #1D9E75 0%, transparent 50%), radial-gradient(circle at 80% 20%, #4A9EBD 0%, transparent 40%)"
-        }} />
+      <section className="relative overflow-hidden" style={{ background: "#0f1f1a" }}>
+        <HeroCarousel />
 
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-24 lg:pt-28 lg:pb-32">
           <div className="max-w-3xl">
