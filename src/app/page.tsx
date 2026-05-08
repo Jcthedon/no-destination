@@ -328,14 +328,15 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer style={{ background: "#070f0a", borderTop: "1px solid rgba(255,255,255,0.05)" }} className="py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 font-semibold text-white">
-            <span
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-black"
-              style={{ background: "#1D9E75" }}
-            >
-              ND
-            </span>
-            No Destination
+          <div className="flex items-center">
+            <Image
+              src="/logo.png"
+              alt="No Destination"
+              width={120}
+              height={34}
+              className="object-contain"
+              style={{ height: 30, width: "auto" }}
+            />
           </div>
           <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>Travel built around who you are.</p>
           <p className="text-xs" style={{ color: "rgba(255,255,255,0.15)" }}>© 2026</p>
