@@ -34,27 +34,30 @@ export default function Nav() {
   const displayName = (user?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? user?.email;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+    <header
+      className="sticky top-0 z-50 backdrop-blur-md"
+      style={{ background: "rgba(5,12,8,0.92)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-bold text-gray-900 hover:opacity-80 transition-opacity"
-        >
-          <span
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-black"
-            style={{ background: "#1D9E75" }}
-          >
-            ND
-          </span>
-          <span className="text-base tracking-tight hidden sm:block">No Destination</span>
+        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <Image
+            src="/logo.png"
+            alt="No Destination"
+            width={160}
+            height={44}
+            className="object-contain"
+            style={{ height: 40, width: "auto" }}
+            priority
+          />
         </Link>
 
         {/* Right side */}
         <nav className="flex items-center gap-1">
           <Link
             href="/group"
-            className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-3 py-1.5 text-sm rounded-lg transition-colors"
+            style={{ color: "rgba(255,255,255,0.55)" }}
           >
             Group trips
           </Link>
@@ -62,13 +65,15 @@ export default function Nav() {
             <>
               <Link
                 href="/results"
-                className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-3 py-1.5 text-sm rounded-lg transition-colors"
+                style={{ color: "rgba(255,255,255,0.55)" }}
               >
                 My Matches
               </Link>
               <Link
                 href="/profile"
-                className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-3 py-1.5 text-sm rounded-lg transition-colors"
+                style={{ color: "rgba(255,255,255,0.55)" }}
               >
                 Profile
               </Link>
@@ -82,7 +87,8 @@ export default function Nav() {
                 <div className="relative ml-2" ref={dropdownRef}>
                   <button
                     onClick={() => setDropdownOpen((o) => !o)}
-                    className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all"
+                    className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full transition-all"
+                    style={{ border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)" }}
                   >
                     {avatarUrl ? (
                       <Image
@@ -115,38 +121,36 @@ export default function Nav() {
                   </button>
 
                   {dropdownOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-xl border border-gray-100 shadow-lg py-1 z-50">
-                      <div className="px-4 py-2.5 border-b border-gray-100">
-                        <p className="text-sm font-semibold text-gray-900 truncate">
+                    <div
+                      className="absolute right-0 top-full mt-2 w-52 rounded-xl shadow-2xl py-1 z-50"
+                      style={{ background: "#0d1a11", border: "1px solid rgba(255,255,255,0.08)" }}
+                    >
+                      <div className="px-4 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                        <p className="text-sm font-semibold text-white truncate">
                           {user.user_metadata?.full_name ?? "Traveler"}
                         </p>
-                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                        <p className="text-xs truncate" style={{ color: "rgba(255,255,255,0.35)" }}>{user.email}</p>
                       </div>
-                      <Link
-                        href="/profile"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        My profile
-                      </Link>
-                      <Link
-                        href="/results"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        My matches
-                      </Link>
-                      <Link
-                        href="/group"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Group trips
-                      </Link>
-                      <div className="border-t border-gray-100 mt-1 pt-1">
+                      {[
+                        { href: "/profile", label: "My profile" },
+                        { href: "/results", label: "My matches" },
+                        { href: "/group", label: "Group trips" },
+                      ].map(({ href, label }) => (
+                        <Link
+                          key={href}
+                          href={href}
+                          onClick={() => setDropdownOpen(false)}
+                          className="block px-4 py-2 text-sm transition-colors"
+                          style={{ color: "rgba(255,255,255,0.60)" }}
+                        >
+                          {label}
+                        </Link>
+                      ))}
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }} className="mt-1 pt-1">
                         <button
                           onClick={() => { signOut(); setDropdownOpen(false); }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="w-full text-left px-4 py-2 text-sm transition-colors"
+                          style={{ color: "rgba(255,255,255,0.35)" }}
                         >
                           Sign out
                         </button>
@@ -159,7 +163,8 @@ export default function Nav() {
                 <>
                   <button
                     onClick={() => signInWithGoogle()}
-                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-colors"
+                    style={{ color: "rgba(255,255,255,0.55)" }}
                   >
                     Sign in
                   </button>
