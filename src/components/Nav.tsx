@@ -44,10 +44,10 @@ export default function Nav() {
           <Image
             src="/logo.png"
             alt="No Destination"
-            width={160}
-            height={44}
+            width={220}
+            height={60}
             className="object-contain"
-            style={{ height: 40, width: "auto" }}
+            style={{ height: 52, width: "auto" }}
             priority
           />
         </Link>
