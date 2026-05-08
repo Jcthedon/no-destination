@@ -38,16 +38,16 @@ export default function Nav() {
       className="sticky top-0 z-50 backdrop-blur-md"
       style={{ background: "rgba(5,12,8,0.92)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-24 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
           <Image
             src="/logo.png"
             alt="No Destination"
-            width={220}
-            height={60}
+            width={500}
+            height={140}
             className="object-contain"
-            style={{ height: 52, width: "auto" }}
+            style={{ height: 88, width: "auto" }}
             priority
           />
         </Link>
