@@ -37,7 +37,7 @@ export default function QuizPage() {
       setLoading(true);
       setTimeout(() => {
         computeAndSave();
-        router.push("/results");
+        router.push("/reveal");
       }, 1800);
     }
   }
