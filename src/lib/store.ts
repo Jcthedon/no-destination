@@ -12,9 +12,11 @@ type QuizStore = {
   profile: Profile | null;
   matches: Country[];
   saved: string[];
+  query: string;
 
   setAnswer: (index: number, value: number) => void;
   computeAndSave: () => void;
+  setFromAI: (profile: Profile, matches: Country[], query: string) => void;
   toggleSaved: (code: string) => void;
   reset: () => void;
 
@@ -30,6 +32,7 @@ export const useQuizStore = create<QuizStore>()(
       profile: null,
       matches: [],
       saved: [],
+      query: "",
 
       setAnswer: (index, value) =>
         set((state) => {
@@ -43,6 +46,10 @@ export const useQuizStore = create<QuizStore>()(
         const profile = computeProfile(answers);
         const matches = getMatches(profile);
         set({ profile, matches });
+      },
+
+      setFromAI: (profile, matches, query) => {
+        set({ profile, matches, query });
       },
 
       toggleSaved: async (code) => {
@@ -78,6 +85,7 @@ export const useQuizStore = create<QuizStore>()(
           answers: Array(8).fill(undefined),
           profile: null,
           matches: [],
+          query: "",
         }),
 
       // Push local profile + saved to Supabase (called after sign-in)
