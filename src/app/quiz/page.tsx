@@ -133,14 +133,15 @@ function QuestionnaireScreen() {
   const { answers, setAnswer, computeAndSave } = useQuizStore();
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [animDir, setAnimDir] = useState<"in" | "out">("in");
-  const progress = (current / QUESTIONS.length) * 100;
+  const [slide, setSlide] = useState<"enter" | "exit-left" | "exit-right">("enter");
+
+  const progress = ((current + 1) / QUESTIONS.length) * 100;
 
   function selectAnswer(optIndex: number) {
     setAnswer(current, optIndex);
     if (current < QUESTIONS.length - 1) {
-      setAnimDir("out");
-      setTimeout(() => { setCurrent((c) => c + 1); setAnimDir("in"); }, 220);
+      setSlide("exit-left");
+      setTimeout(() => { setCurrent((c) => c + 1); setSlide("enter"); }, 260);
     } else {
       setLoading(true);
       setTimeout(() => { computeAndSave(); router.push("/reveal"); }, 1800);
@@ -149,8 +150,8 @@ function QuestionnaireScreen() {
 
   function goBack() {
     if (current > 0) {
-      setAnimDir("out");
-      setTimeout(() => { setCurrent((c) => c - 1); setAnimDir("in"); }, 150);
+      setSlide("exit-right");
+      setTimeout(() => { setCurrent((c) => c - 1); setSlide("enter"); }, 260);
     }
   }
 
@@ -159,37 +160,91 @@ function QuestionnaireScreen() {
   const q = QUESTIONS[current];
   const selected = answers[current];
 
-  return (
-    <div className="fixed inset-0 bg-white flex flex-col">
-      <div className="px-5 pt-5 pb-4 max-w-lg mx-auto w-full">
-        {/* Progress */}
-        <div className="flex items-center gap-3 mb-5">
-          <button
-            onClick={goBack}
-            className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </button>
-          <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
-            <div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: "#1D9E75" }} />
-          </div>
-          <span className="text-sm text-gray-400 tabular-nums">
-            {current + 1}/{QUESTIONS.length}
-          </span>
-        </div>
+  const slideStyle = {
+    enter:      { opacity: 1, transform: "translateX(0px)" },
+    "exit-left":  { opacity: 0, transform: "translateX(-28px)" },
+    "exit-right": { opacity: 0, transform: "translateX(28px)" },
+  }[slide];
 
-        {/* Question */}
+  return (
+    <div
+      className="fixed inset-0 flex flex-col overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f0faf6 0%, #e8f5f0 35%, #f5f0ff 70%, #fff5e8 100%)",
+      }}
+    >
+      {/* Soft topographic accent blobs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div
-          key={current}
+          className="absolute rounded-full"
           style={{
-            opacity: animDir === "in" ? 1 : 0,
-            transform: animDir === "in" ? "translateY(0)" : "translateY(-8px)",
-            transition: "opacity 0.22s ease, transform 0.22s ease",
+            width: 500, height: 500, top: -180, right: -120,
+            background: "radial-gradient(circle, rgba(29,158,117,0.07) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: 400, height: 400, bottom: -100, left: -80,
+            background: "radial-gradient(circle, rgba(120,80,220,0.05) 0%, transparent 70%)",
+          }}
+        />
+      </div>
+
+      {/* Top bar */}
+      <div className="relative z-10 px-5 pt-6 max-w-lg mx-auto w-full flex items-center gap-4">
+        <button
+          onClick={goBack}
+          disabled={current === 0}
+          className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all"
+          style={{
+            background: current === 0 ? "transparent" : "rgba(0,0,0,0.06)",
+            color: current === 0 ? "transparent" : "#6b7280",
           }}
         >
-          <p className="text-2xl font-bold text-gray-900 leading-tight mb-6">{q.q}</p>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+            <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {/* Progress bar */}
+        <div className="flex-1 flex flex-col gap-1.5">
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(0,0,0,0.07)" }}>
+            <div
+              className="h-full rounded-full"
+              style={{
+                width: `${progress}%`,
+                background: "linear-gradient(90deg, #1D9E75, #34d399)",
+                transition: "width 0.4s cubic-bezier(0.22,1,0.36,1)",
+              }}
+            />
+          </div>
+          <div className="flex justify-between">
+            <span className="text-xs font-medium" style={{ color: "#1D9E75" }}>
+              Question {current + 1}
+            </span>
+            <span className="text-xs" style={{ color: "rgba(0,0,0,0.3)" }}>
+              {QUESTIONS.length - current - 1} left
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Question + options */}
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-5 max-w-lg mx-auto w-full pb-8">
+        <div
+          key={current}
+          style={{ ...slideStyle, transition: "opacity 0.26s ease, transform 0.26s cubic-bezier(0.22,1,0.36,1)" }}
+        >
+          {/* Question text */}
+          <p
+            className="font-black leading-tight mb-8"
+            style={{ fontSize: "clamp(1.5rem, 4vw, 1.9rem)", color: "#0f1a15", letterSpacing: "-0.02em" }}
+          >
+            {q.q}
+          </p>
+
+          {/* Options */}
           <div className="flex flex-col gap-3">
             {q.opts.map((opt, i) => {
               const isSel = selected === i;
@@ -197,32 +252,82 @@ function QuestionnaireScreen() {
                 <button
                   key={i}
                   onClick={() => selectAnswer(i)}
-                  className="w-full text-left px-5 py-4 rounded-2xl border-2 text-base font-medium transition-all"
+                  className="group w-full text-left px-5 py-4 rounded-2xl text-base transition-all duration-200"
                   style={{
-                    background: isSel ? "#1D9E7512" : "#FAFAFA",
-                    borderColor: isSel ? "#1D9E75" : "#E5E7EB",
-                    color: isSel ? "#1D9E75" : "#1F2937",
+                    background: isSel
+                      ? "rgba(29,158,117,0.12)"
+                      : "rgba(255,255,255,0.7)",
+                    border: isSel
+                      ? "2px solid #1D9E75"
+                      : "2px solid rgba(0,0,0,0.06)",
+                    backdropFilter: "blur(12px)",
+                    WebkitBackdropFilter: "blur(12px)",
+                    boxShadow: isSel
+                      ? "0 4px 20px rgba(29,158,117,0.15)"
+                      : "0 2px 8px rgba(0,0,0,0.04)",
+                    transform: isSel ? "translateY(-1px)" : "translateY(0)",
+                    color: isSel ? "#0f6b4f" : "#1f2937",
                     fontWeight: isSel ? 600 : 500,
                   }}
+                  onMouseEnter={(e) => {
+                    if (!isSel) {
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow = "0 6px 20px rgba(0,0,0,0.08)";
+                      e.currentTarget.style.background = "rgba(255,255,255,0.9)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSel) {
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
+                      e.currentTarget.style.background = "rgba(255,255,255,0.7)";
+                    }
+                  }}
                 >
-                  <span className="flex items-center gap-3">
+                  <span className="flex items-center gap-3.5">
                     <span
-                      className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold"
+                      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-all duration-200"
                       style={{
-                        borderColor: isSel ? "#1D9E75" : "#D1D5DB",
-                        background: isSel ? "#1D9E75" : "transparent",
-                        color: isSel ? "#fff" : "#9CA3AF",
+                        background: isSel ? "#1D9E75" : "rgba(0,0,0,0.06)",
+                        color: isSel ? "#fff" : "#9ca3af",
                       }}
                     >
                       {String.fromCharCode(65 + i)}
                     </span>
-                    {opt}
+                    <span>{opt}</span>
+                    {isSel && (
+                      <span className="ml-auto flex-shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <circle cx="8" cy="8" r="7" fill="#1D9E75" />
+                          <path d="M5 8l2 2 4-4" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    )}
                   </span>
                 </button>
               );
             })}
           </div>
         </div>
+      </div>
+
+      {/* Step dots at bottom */}
+      <div className="relative z-10 pb-6 flex justify-center gap-1.5">
+        {QUESTIONS.map((_, i) => (
+          <div
+            key={i}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i === current ? 20 : 6,
+              height: 6,
+              background: i === current
+                ? "#1D9E75"
+                : i < current
+                ? "rgba(29,158,117,0.35)"
+                : "rgba(0,0,0,0.1)",
+            }}
+          />
+        ))}
       </div>
     </div>
   );
