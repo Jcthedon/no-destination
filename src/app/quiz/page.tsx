@@ -160,68 +160,68 @@ function QuestionnaireScreen() {
   const selected = answers[current];
 
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col gap-5">
-      {/* Progress bar */}
-      <div className="flex items-center gap-3">
-        <button
-          onClick={goBack}
-          className="p-2 rounded-full transition-colors"
-          style={{ color: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }}
-          disabled={current === 0}
-        >
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-            <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-          <div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: "#1D9E75" }} />
+    <div className="fixed inset-0 bg-white flex flex-col">
+      <div className="px-5 pt-5 pb-4 max-w-lg mx-auto w-full">
+        {/* Progress */}
+        <div className="flex items-center gap-3 mb-5">
+          <button
+            onClick={goBack}
+            className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-400"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M12 4L6 10L12 16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: "#1D9E75" }} />
+          </div>
+          <span className="text-sm text-gray-400 tabular-nums">
+            {current + 1}/{QUESTIONS.length}
+          </span>
         </div>
-        <span className="text-sm tabular-nums" style={{ color: "rgba(255,255,255,0.3)" }}>
-          {current + 1}/{QUESTIONS.length}
-        </span>
-      </div>
 
-      {/* Question */}
-      <div
-        key={current}
-        style={{
-          opacity: animDir === "in" ? 1 : 0,
-          transform: animDir === "in" ? "translateY(0)" : "translateY(-8px)",
-          transition: "opacity 0.22s ease, transform 0.22s ease",
-        }}
-      >
-        <p className="text-2xl font-bold text-white leading-tight mb-6">{q.q}</p>
-        <div className="flex flex-col gap-3">
-          {q.opts.map((opt, i) => {
-            const isSel = selected === i;
-            return (
-              <button
-                key={i}
-                onClick={() => selectAnswer(i)}
-                className="w-full text-left px-5 py-4 rounded-2xl border-2 text-base transition-all"
-                style={{
-                  background: isSel ? "rgba(29,158,117,0.12)" : "rgba(255,255,255,0.04)",
-                  borderColor: isSel ? "#1D9E75" : "rgba(255,255,255,0.1)",
-                  color: isSel ? "#1D9E75" : "rgba(255,255,255,0.75)",
-                  fontWeight: isSel ? 600 : 500,
-                }}
-              >
-                <span className="flex items-center gap-3">
-                  <span
-                    className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold"
-                    style={{
-                      borderColor: isSel ? "#1D9E75" : "rgba(255,255,255,0.2)",
-                      background: isSel ? "#1D9E75" : "transparent",
-                      color: isSel ? "#fff" : "rgba(255,255,255,0.3)",
-                    }}
-                  >
-                    {String.fromCharCode(65 + i)}
+        {/* Question */}
+        <div
+          key={current}
+          style={{
+            opacity: animDir === "in" ? 1 : 0,
+            transform: animDir === "in" ? "translateY(0)" : "translateY(-8px)",
+            transition: "opacity 0.22s ease, transform 0.22s ease",
+          }}
+        >
+          <p className="text-2xl font-bold text-gray-900 leading-tight mb-6">{q.q}</p>
+          <div className="flex flex-col gap-3">
+            {q.opts.map((opt, i) => {
+              const isSel = selected === i;
+              return (
+                <button
+                  key={i}
+                  onClick={() => selectAnswer(i)}
+                  className="w-full text-left px-5 py-4 rounded-2xl border-2 text-base font-medium transition-all"
+                  style={{
+                    background: isSel ? "#1D9E7512" : "#FAFAFA",
+                    borderColor: isSel ? "#1D9E75" : "#E5E7EB",
+                    color: isSel ? "#1D9E75" : "#1F2937",
+                    fontWeight: isSel ? 600 : 500,
+                  }}
+                >
+                  <span className="flex items-center gap-3">
+                    <span
+                      className="flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold"
+                      style={{
+                        borderColor: isSel ? "#1D9E75" : "#D1D5DB",
+                        background: isSel ? "#1D9E75" : "transparent",
+                        color: isSel ? "#fff" : "#9CA3AF",
+                      }}
+                    >
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    {opt}
                   </span>
-                  {opt}
-                </span>
-              </button>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
